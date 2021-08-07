@@ -1,0 +1,44 @@
+name: Build Photon Sample
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    name: Build ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-18.04
+    timeout-minutes: 120
+    strategy:
+        matrix:
+          targetPlatform:
+              - iOS
+              # - Android
+    steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v2
+
+        - name: Cache Libraries
+          uses: actions/cache@v2
+          with:
+            path: |
+              Library
+              build/${{ matrix.targetPlatform }}
+            key: Library-${{ matrix.targetPlatform }}
+            restore-keys: Library-
+
+        - name: Build ${{ matrix.targetPlatform }} using game.ci builder
+          uses: game-ci/unity-builder@v2
+          env:
+            UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          with:
+            allowDirtyBuild: true
+            targetPlatform: ${{ matrix.targetPlatform }}
+            unityVersion: 2020.3.10f1
+            buildMethod: EditorBuilder.CgsBuilder.Build
+
+        - name: Upload ${{ matrix.targetPlatform }} build 
+          uses: actions/upload-artifact@v2
+          with:
+            name: build-${{ matrix.targetPlatform }}
+            path: build/${{ matrix.targetPlatform }}
+            retention-days: 2
