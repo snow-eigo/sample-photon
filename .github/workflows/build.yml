@@ -6,13 +6,13 @@ on:
 jobs:
   build:
     name: Build ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
         matrix:
           targetPlatform:
               - iOS
-              # - Android
+              - Android
     steps:
         - name: Checkout Repository
           uses: actions/checkout@v2
