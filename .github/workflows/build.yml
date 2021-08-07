@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Build ${{ matrix.targetPlatform }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     timeout-minutes: 120
     strategy:
         matrix:
@@ -33,7 +33,7 @@ jobs:
           with:
             allowDirtyBuild: true
             targetPlatform: ${{ matrix.targetPlatform }}
-            unityVersion: 2020.3.10f1
+            unityVersion: 2019.4.12f1
             buildMethod: EditorBuilder.CgsBuilder.Build
 
         - name: Upload ${{ matrix.targetPlatform }} build 
