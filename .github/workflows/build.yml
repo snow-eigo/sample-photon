@@ -42,3 +42,8 @@ jobs:
             name: build-${{ matrix.targetPlatform }}
             path: build/${{ matrix.targetPlatform }}
             retention-days: 2
+
+        - name: Cleanup artifacts
+          uses: geekyeggo/delete-artifact@v1
+          with:
+            name: build-${{ matrix.targetPlatform }}
