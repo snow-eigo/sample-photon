@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExitGames.Client.Photon;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -20,8 +21,7 @@ namespace EditorBuilder
             // Gather values from args
             var options = GetValidatedOptions();
             
-            // show photon id
-            Console.WriteLine($"Photon ID: {PhotonNetwork.PhotonServerSettings.AppID}");
+            LogPhotonNetwork("Before Setting Photon Server Settings");
 
             // Set version for this build
             Console.WriteLine($"PlayerSettings.bundleVersion: {PlayerSettings.bundleVersion}");
@@ -35,6 +35,7 @@ namespace EditorBuilder
 
             // Apply build target
             var buildTarget = (BuildTarget) Enum.Parse(typeof(BuildTarget), options["buildTarget"]);
+            
             switch (buildTarget)
             {
                 case BuildTarget.Android:
@@ -59,7 +60,68 @@ namespace EditorBuilder
             }
 
             // Custom build
+            BuildPhotonNetwork();
+            LogPhotonNetwork("After Setting Photon Server Settings");
             Build(buildTarget, options["customBuildPath"]);
+        }
+
+        private static void LogPhotonNetwork(string title)
+        {
+            Console.WriteLine(
+                $"{Eol}" +
+                $"###########################{Eol}" +
+                $"#     {title}     #{Eol}" +
+                $"###########################{Eol}" +
+                $"{Eol}"
+            );
+            
+            // show photon id
+            Console.WriteLine($"Photon HostType: {PhotonNetwork.PhotonServerSettings.HostType}");
+            Console.WriteLine($"Photon Enabled Regions: {PhotonNetwork.PhotonServerSettings.EnabledRegions}");
+            Console.WriteLine($"Photon Preferred Region: {PhotonNetwork.PhotonServerSettings.PreferredRegion}");
+            Console.WriteLine($"Photon ID: {PhotonNetwork.PhotonServerSettings.AppID}");
+            Console.WriteLine($"Photon Protocol: {PhotonNetwork.PhotonServerSettings.Protocol}");
+            Console.WriteLine($"Photon PunLogging: {PhotonNetwork.PhotonServerSettings.PunLogging}");
+            Console.WriteLine($"Photon NetworkLogging: {PhotonNetwork.PhotonServerSettings.NetworkLogging}");
+            Console.WriteLine($"Photon RunInBackground: {PhotonNetwork.PhotonServerSettings.RunInBackground}");
+            Console.WriteLine($"Photon RpcList: {PhotonNetwork.PhotonServerSettings.RpcList.Count}");
+            
+            foreach (var rpc in PhotonNetwork.PhotonServerSettings.RpcList)
+            {
+                Console.WriteLine($"Photon RpcItem: {rpc}");
+            }
+        }
+
+        private static void BuildPhotonNetwork()
+        {
+            PhotonNetwork.PhotonServerSettings.HostType = ServerSettings.HostingOption.PhotonCloud;
+            PhotonNetwork.PhotonServerSettings.PreferredRegion = CloudRegionCode.jp;
+            PhotonNetwork.PhotonServerSettings.AppID = "5a982d5a-00e0-447d-a2d6-6b0d8570c340";
+            PhotonNetwork.PhotonServerSettings.Protocol = ConnectionProtocol.Udp;
+
+            PhotonNetwork.PhotonServerSettings.PunLogging = PhotonLogLevel.ErrorsOnly;
+            PhotonNetwork.PhotonServerSettings.NetworkLogging = DebugLevel.ERROR;
+
+            PhotonNetwork.PhotonServerSettings.RunInBackground = true;
+
+            PhotonNetwork.PhotonServerSettings.RpcList = new List<string>()
+            {
+                "Chat",
+                "ColorRpc",
+                "DestroyRpc",
+                "DoJump",
+                "Flash",
+                "InstantiateRpc",
+                "Marco",
+                "PickupItemInit",
+                "Polo",
+                "PunPickup",
+                "PunPickupSimple",
+                "PunRespawn",
+                "RequestForPickupItems",
+                "RequestForPickupTimes",
+                "TaggedPlayer"
+            };
         }
 
         private static Dictionary<string, string> GetValidatedOptions()
