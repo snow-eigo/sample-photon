@@ -33,7 +33,7 @@ jobs:
           with:
             allowDirtyBuild: true
             targetPlatform: ${{ matrix.targetPlatform }}
-            unityVersion: 2019.4.12f1
+            unityVersion: 2020.3.10f1
             buildMethod: EditorBuilder.CgsBuilder.Build
 
         - name: Upload ${{ matrix.targetPlatform }} build 
