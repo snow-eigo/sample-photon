@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     name: Build ${{ matrix.targetPlatform }}
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
         matrix:
